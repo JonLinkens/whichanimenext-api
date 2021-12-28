@@ -1,5 +1,5 @@
 from typing import Optional
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from recommender import Recommender
 
 
@@ -35,6 +35,10 @@ def recommend(anime_name):
     anime is attached as part of path
 
     returns an object with an array of the top 5 recommended anime
+
+    raises a 404 error if the anime isn't found
     """
     recommended_anime = rec.recommend(anime_name)
+    if recommended_anime == -1:
+        raise HTTPException(status_code=404, detail="Anime not found")
     return{"anime": recommended_anime}
