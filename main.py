@@ -49,4 +49,7 @@ def recommend(anime_name):
 
 @app.get("/get/anime")
 def list_all_anime():
-    return{"names": anime_names}
+    anime_labels = []
+    for name in anime_names:
+        anime_labels.append({"value": name, "label": name})
+    return{"names": anime_labels}
