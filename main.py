@@ -1,9 +1,12 @@
 from typing import Optional
 from fastapi import FastAPI, HTTPException
 from recommender import Recommender
+import pandas as pd
 
-
-rec = Recommender("data/anime_similarity_2020_cleaned.csv.gz")
+anime_names = pd.read_csv(
+    "data/anime_similarity_2020_cleaned.csv.gz").columns.values.tolist()
+rec = Recommender("data/anime_similarity_2020_cleaned.csv.gz",
+                  "data/anime_names.csv.gz")
 
 app = FastAPI()
 
@@ -42,3 +45,8 @@ def recommend(anime_name):
     if recommended_anime == -1:
         raise HTTPException(status_code=404, detail="Anime not found")
     return{"anime": recommended_anime}
+
+
+@app.get("/get/anime")
+def list_all_anime():
+    return{"names": anime_names}
