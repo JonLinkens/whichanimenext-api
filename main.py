@@ -1,5 +1,5 @@
-from typing import Optional
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from recommender import Recommender
 import pandas as pd
 
@@ -9,6 +9,16 @@ rec = Recommender("data/anime_similarity_2020_cleaned.csv.gz",
                   "data/anime_names.csv.gz")
 
 app = FastAPI()
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/")
