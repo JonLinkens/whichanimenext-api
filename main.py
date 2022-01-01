@@ -3,15 +3,21 @@ from fastapi.middleware.cors import CORSMiddleware
 from recommender import Recommender
 import pandas as pd
 
+# putting titles into array for use later
 anime_names = pd.read_csv(
     "data/anime_similarity_2020_cleaned.csv.gz").columns.values.tolist()
+
+# initiatlising Recommender class
 rec = Recommender("data/anime_similarity_2020_cleaned.csv.gz",
                   "data/anime_names.csv.gz")
 
+# initialise API object
 app = FastAPI()
 
-origins = ["*"]
 
+# bypassing CORS stuff - this probably needs adjusting for safety
+# but for now all origins are allowed
+origins = ["*"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -43,7 +49,7 @@ def wake_api():
 @app.get("/recommend/{anime_name}")
 def recommend(anime_name):
     """
-    endpoint for returning recommendations
+    returns object with 5 recommendations based on query param
 
     anime is attached as part of path
 
@@ -59,6 +65,15 @@ def recommend(anime_name):
 
 @app.get("/get/anime")
 def list_all_anime():
+    """
+    returns an array of anime name objects structured as:
+    { 
+        "value": <anime_name>,
+        "label": <anime_name>
+    }
+
+    to allow for react-select entries
+    """
     anime_labels = []
     for name in anime_names:
         anime_labels.append({"value": name, "label": name})
