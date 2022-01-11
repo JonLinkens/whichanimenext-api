@@ -9,7 +9,7 @@ anime_names = pd.read_csv(
 
 # initiatlising Recommender class
 rec = Recommender("data/anime_similarity_2020_cleaned.csv.gz",
-                  "data/anime_names.csv.gz")
+                  "data/anime_info.csv.gz")
 
 # initialise API object
 app = FastAPI()
@@ -58,16 +58,17 @@ def recommend(anime_name):
     raises a 404 error if the anime isn't found
     """
     recommended_anime = rec.recommend(anime_name)
-    if recommended_anime == -1:
-        raise HTTPException(status_code=404, detail="Anime not found")
+    # if recommended_anime == -1:
+    #     raise HTTPException(status_code=404, detail="Anime not found")
     return{"anime": recommended_anime}
+    return{"test": anime_name}
 
 
 @app.get("/get/anime")
 def list_all_anime():
     """
     returns an array of anime name objects structured as:
-    { 
+    {   
         "value": <anime_name>,
         "label": <anime_name>
     }

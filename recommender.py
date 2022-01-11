@@ -3,7 +3,7 @@ import pandas as pd
 
 class Recommender:
 
-    def __init__(self, recpath, namepath):
+    def __init__(self, recpath, infopath):
         """
         Class constructor: reading in datasets and assigning to variables
 
@@ -14,7 +14,7 @@ class Recommender:
         self.recpath = recpath
         self.ratings = pd.read_csv(recpath)
         self.ratings = self.ratings.set_index('Name')
-        self.names = pd.read_csv(namepath, index_col=[0])
+        self.animeinfo = pd.read_csv(infopath)
 
     def __str__(self):
         """
@@ -39,10 +39,27 @@ class Recommender:
         try:
             recs = []
             for anime in self.ratings.sort_values(by=anime_name, ascending=False).index[1:6]:
-                id = int(self.names.loc[self.names['Name']
-                                        == anime].iloc[0]['MAL_ID'])
-                recs.append({"id": id, "name": anime, "match": round(
-                    self.ratings[anime][anime_name]*100, 2)})
+                # get the relevant details from the anime_info dataset
+                mal_id = int(self.animeinfo.loc[self.animeinfo['Name']
+                                                == anime].iloc[0]['MAL_ID'])
+                image_url = self.animeinfo.loc[self.animeinfo['Name']
+                                               == anime].iloc[0]['Image URL']
+                aired_from = self.animeinfo.loc[self.animeinfo['Name']
+                                                == anime].iloc[0]['Aired From']
+                aired_to = self.animeinfo.loc[self.animeinfo['Name']
+                                              == anime].iloc[0]['Aired To']
+                synopsis = self.animeinfo.loc[self.animeinfo['Name']
+                                              == anime].iloc[0]['Synopsis']
+
+                recs.append({
+                    "id": mal_id,
+                    "name": anime,
+                    "image_url": image_url,
+                    "aired_from": aired_from,
+                    "aired_to": aired_to,
+                    "synopsis": synopsis,
+                    "match": round(self.ratings[anime][anime_name]*100, 2)})
+
             return recs
         except KeyError:
             return -1
