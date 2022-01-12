@@ -42,6 +42,8 @@ class Recommender:
                 # get the relevant details from the anime_info dataset
                 mal_id = int(self.animeinfo.loc[self.animeinfo['Name']
                                                 == anime].iloc[0]['MAL_ID'])
+                url = self.animeinfo.loc[self.animeinfo['Name']
+                                         == anime].iloc[0]['URL']
                 image_url = self.animeinfo.loc[self.animeinfo['Name']
                                                == anime].iloc[0]['Image URL']
                 aired_from = self.animeinfo.loc[self.animeinfo['Name']
@@ -53,6 +55,7 @@ class Recommender:
 
                 recs.append({
                     "id": mal_id,
+                    "url": url,
                     "name": anime,
                     "image_url": image_url,
                     "aired_from": aired_from,
